@@ -61,6 +61,14 @@ switch($page)
         include("pages/data/cells.php");
     break;
 
+    case "edit_cell":
+        include("pages/data/cells_edit.php");
+    break;
+
+    case "delete_cell":
+        include("pages/data/cells_delete.php");
+    break;
+
     //cells
     case "ops":
         include("pages/data/ops.php");

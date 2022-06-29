@@ -18,10 +18,20 @@ class CellOps
    
     public function __construct()
     {
+        //cells
         if (isset($_POST["new_cell"])) {
             $this->newCell();
         }
 
+        else if (isset($_POST["edit_cell"])) {
+            $this->editCell();
+        }
+
+        else if (isset($_POST["delete_cell"])) {
+            $this->deleteCell();
+        }
+
+        //ops
         else if (isset($_POST["new_op"])) {
             $this->newOp();
         }
@@ -73,6 +83,100 @@ class CellOps
 
 
 
+
+
+    private function editCell()
+    {
+        if (empty($_POST['cell_name']))
+        {
+            $this->errors[] = "Empty Cell Name";
+        }
+
+        elseif (!empty($_POST['cell_name']))
+        {
+
+            $this->db_connection = new mysqli(DB_HOST, DB_USER, DB_PASS, DB_NAME);
+
+            if (!$this->db_connection->set_charset("utf8")) {
+                $this->errors[] = $this->db_connection->error;
+            }
+
+            if (!$this->db_connection->connect_errno) {
+
+                $cell_id                = $this->db_connection->real_escape_string(strip_tags($_GET['cell_id'], ENT_QUOTES));
+                $cell_name              = $this->db_connection->real_escape_string(strip_tags($_POST['cell_name'], ENT_QUOTES));
+
+                $sql = "SELECT * FROM cells WHERE cell_name = '" . $cell_name . "' AND cell_id != $cell_id;";
+                $query_check_user_name = $this->db_connection->query($sql);
+
+                if ($query_check_user_name->num_rows == 1) {
+                    $this->errors[] = "Sorry, that cell is already registered.";
+                } else {
+                    $sql = "UPDATE  cells SET cell_name = '" . $cell_name . "' WHERE cell_id = $cell_id;";
+                    $query_new_user_insert = $this->db_connection->query($sql);
+
+                    if ($query_new_user_insert) {
+                        $this->messages[] = "Cell updated successfully.";
+                    } else {
+                        $this->errors[] = "Sorry, registration failed. Please go back and try again.";
+                    }
+                }
+            } else {
+                $this->errors[] = "Sorry, no database connection.";
+            }
+        } else {
+            $this->errors[] = "An unknown error occurred.";
+        }
+    }
+
+
+
+
+
+    private function deleteCell()
+    {
+        if (empty($_POST['cell_name']))
+        {
+            $this->errors[] = "Empty Cell Name";
+        }
+
+        elseif (!empty($_POST['cell_name']))
+        {
+
+            $this->db_connection = new mysqli(DB_HOST, DB_USER, DB_PASS, DB_NAME);
+
+            if (!$this->db_connection->set_charset("utf8")) {
+                $this->errors[] = $this->db_connection->error;
+            }
+
+            if (!$this->db_connection->connect_errno) {
+
+                $cell_id                = $this->db_connection->real_escape_string(strip_tags($_GET['cell_id'], ENT_QUOTES));
+                $cell_name              = $this->db_connection->real_escape_string(strip_tags($_POST['cell_name'], ENT_QUOTES));
+
+
+                $sql = "UPDATE  cells SET cell_active = 0 WHERE cell_id = $cell_id;";
+                $query_new_user_insert = $this->db_connection->query($sql);
+
+                if ($query_new_user_insert) {
+                    $this->messages[] = "Cell updated successfully.";
+                }
+                else
+                {
+                    $this->errors[] = "Sorry, registration failed. Please go back and try again.";
+                }
+
+            }
+            else
+            {
+                $this->errors[] = "Sorry, no database connection.";
+            }
+        }
+        else
+        {
+            $this->errors[] = "An unknown error occurred.";
+        }
+    }
 
 
 
