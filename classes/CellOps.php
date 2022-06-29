@@ -35,6 +35,14 @@ class CellOps
         else if (isset($_POST["new_op"])) {
             $this->newOp();
         }
+
+        else if (isset($_POST["edit_op"])) {
+            $this->editOp();
+        }
+
+        else if (isset($_POST["delete_op"])) {
+            $this->editOp();
+        }
     }
 
    
@@ -228,10 +236,111 @@ class CellOps
             $this->errors[] = "An unknown error occurred.";
         }
     }
+
+
+
+
+
+
+
+
+
+    private function editOp()
+    {
+        $cell_id = $_GET['cell_id'];
+
+        if (empty($_POST['op_name']))
+        {
+            $this->errors[] = "Empty Operation Name";
+        }
+
+        elseif (!empty($_POST['op_name']))
+        {
+            $this->db_connection = new mysqli(DB_HOST, DB_USER, DB_PASS, DB_NAME);
+
+            if (!$this->db_connection->set_charset("utf8")) {
+                $this->errors[] = $this->db_connection->error;
+            }
+
+            if (!$this->db_connection->connect_errno) {
+
+                $op_name              = $this->db_connection->real_escape_string(strip_tags($_POST['op_name'], ENT_QUOTES));
+                $op_id                = $this->db_connection->real_escape_string(strip_tags($_GET['op_id'], ENT_QUOTES));
+
+                $sql = "SELECT * FROM ops WHERE op_name = '" . $op_name . "' AND cell_id = $cell_id  AND op_id != $op_id ;";
+                $query_check_user_name = $this->db_connection->query($sql);
+
+                if ($query_check_user_name->num_rows == 1) {
+                    $this->errors[] = "Sorry, that operation is already registered.";
+                } else {
+                    $sql = "UPDATE ops SET op_name = '$op_name' , cell_id = '$cell_id' WHERE op_id = $op_id;";
+                    $query_new_user_insert = $this->db_connection->query($sql);
+
+                    if ($query_new_user_insert) {
+                        $this->messages[] = "Operation updated successfully.";
+                    } else {
+                        $this->errors[] = "Sorry, registration failed. Please go back and try again.";
+                    }
+                }
+            } else {
+                $this->errors[] = "Sorry, no database connection.";
+            }
+        } else {
+            $this->errors[] = "An unknown error occurred.";
+        }
+    }
+
+
+
+
+
+
+    private function deleteOp()
+    {
+        $cell_id = $_GET['cell_id'];
+
+        if (empty($_POST['op_name']))
+        {
+            $this->errors[] = "Empty Operation Name";
+        }
+
+        elseif (!empty($_POST['op_name']))
+        {
+            $this->db_connection = new mysqli(DB_HOST, DB_USER, DB_PASS, DB_NAME);
+
+            if (!$this->db_connection->set_charset("utf8")) {
+                $this->errors[] = $this->db_connection->error;
+            }
+
+            if (!$this->db_connection->connect_errno) {
+
+                $op_name              = $this->db_connection->real_escape_string(strip_tags($_POST['op_name'], ENT_QUOTES));
+                $op_id                = $this->db_connection->real_escape_string(strip_tags($_GET['op_id'], ENT_QUOTES));
+
+
+                $sql = "UPDATE ops SET op_active = 0 WHERE op_id = $op_id;";
+                $query_new_user_insert = $this->db_connection->query($sql);
+
+                if ($query_new_user_insert) {
+                    $this->messages[] = "Operation deleted successfully.";
+                } else {
+                    $this->errors[] = "Sorry, registration failed. Please go back and try again.";
+                }
+
+            } else {
+                $this->errors[] = "Sorry, no database connection.";
+            }
+        } else {
+            $this->errors[] = "An unknown error occurred.";
+        }
+    }
+
+
+
+
+
+
 }
-
-
-
 
 
 

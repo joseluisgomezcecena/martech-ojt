@@ -69,9 +69,17 @@ switch($page)
         include("pages/data/cells_delete.php");
     break;
 
-    //cells
+    //ops
     case "ops":
         include("pages/data/ops.php");
+    break;
+
+    case "edit_ops":
+        include("pages/data/ops_edit.php");
+    break;
+
+    case "delete_ops":
+        include("pages/data/ops_delete.php");
     break;
 
     //cells - operations menu

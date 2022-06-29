@@ -125,6 +125,8 @@ $row = mysqli_fetch_array($result);
                         <tr>
                             <th>ID</th>
                             <th>Operation</th>
+                            <th>Edit</th>
+                            <th>Delete</th>
                         </tr>
                         </thead>
                         <tbody>
@@ -136,6 +138,8 @@ $row = mysqli_fetch_array($result);
                                 <tr>
                                     <td><?php echo $row['op_id'] ?></td>
                                     <td><?php echo $row['op_name'] ?></td>
+                                    <td><a href="index.php?page=edit_ops&op_id=<?php echo $row['op_id'] ?>&cell_id=<?php echo $_GET['cell_id'] ?>" class="btn btn-primary">Edit</a></td>
+                                    <td><a href="index.php?page=delete_ops&op_id=<?php echo $row['op_id'] ?>&cell_id=<?php echo $_GET['cell_id'] ?>" class="btn btn-danger">Delete</a></td>
                                 </tr>
                             <?php 
                                 endwhile;
