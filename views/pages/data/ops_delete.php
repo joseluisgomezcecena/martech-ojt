@@ -137,7 +137,7 @@ $row_data = mysqli_fetch_array($result_data);
                                 </thead>
                                 <tbody>
                                 <?php
-                                $query = "SELECT * FROM ops WHERE cell_id = {$_GET['cell_id']}";
+                                $query = "SELECT * FROM ops WHERE cell_id = {$_GET['cell_id']} AND op_active = 1";
                                 $result = mysqli_query($connection, $query);
                                 while($row = mysqli_fetch_array($result)):
                                     ?>
